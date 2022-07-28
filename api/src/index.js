@@ -25,7 +25,7 @@ io.on('connection', (socket) => {
     io.emit('chat message', msg);
   });
 
-  socket.send("connected");
+  socket.emit("open", {} );
 });
 
 server.listen(port, () => {

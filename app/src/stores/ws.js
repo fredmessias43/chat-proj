@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 export const useWsStore = defineStore('ws',() => {
 
-  const conn = ref(null);
+  const socket = ref(null);
 
-  return { conn }
+  return { socket }
 })
