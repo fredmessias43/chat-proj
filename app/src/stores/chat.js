@@ -8,7 +8,7 @@ export const useChatStore = defineStore('chat', () => {
   const ws = useWsStore();
 
   const messageList = ref([]);
-  const currentMessage = ref(getEmptyMessage());
+  const currentMessage = ref({});
 
   const owner = computed(() => ({
     id: auth.authUser.id,
