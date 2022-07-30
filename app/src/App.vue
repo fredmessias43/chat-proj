@@ -2,11 +2,15 @@
   <div class="app">
 
     <div class="chat-container">
+      
+      <UsersConnectedList />
 
-      <div class="message-wrapper">
-        <span v-for="m in chat.messageList">
-          {{m.owner.username}} - {{m.text}}
-        </span>
+      <div class="message-wrapper" ref="messageWrapper" >
+        <Message 
+          v-for="m, i in chat.messageList" 
+          :key="i"
+          :message="m"
+        />
       </div>
 
       <div class="message-input" >
@@ -33,7 +37,10 @@ import { useChatStore } from "./stores/chat"
 import { useAuthStore } from "./stores/auth"
 import { io } from "socket.io-client";
 import Dialog from './components/Dialog.vue';
+import Message from './components/chat/Message.vue';
+import UsersConnectedList from './components/UsersConnectedList.vue';
 
+const messageWrapper = ref(null);
 const dialog = ref(null);
 const user = ref({
   username: "fred_ghost",
@@ -55,6 +62,8 @@ function handleSubmit() {
     ...user.value
   };
   dialog.value.close();
+
+  ws.socket.emit("user connected", auth.authUser);
 }
 
 function sendMessage() {
@@ -65,7 +74,8 @@ function sendMessage() {
 
 ws.socket.on("chat message", function (event) {
   chat.messageList.push(event);
-})
+  messageWrapper.value.scrollTo(0, messageWrapper.value.scrollHeight );
+});
 
 onMounted(() => {
   dialog.value.open();
@@ -77,6 +87,8 @@ onMounted(() => {
 .app {
   width: 100vw;
   height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
 }
 .chat-container {
   margin: 5rem auto;
@@ -91,7 +103,8 @@ onMounted(() => {
 .message-wrapper {
   display: flex;
   flex-direction: column;
-
+  height: 100%;
+  overflow-y: auto;
 }
 .message-input {
   margin-top: 1rem;

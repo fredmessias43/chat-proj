@@ -25,6 +25,15 @@ io.on('connection', (socket) => {
     io.emit('chat message', msg);
   });
 
+  socket.on('user connected', user => {
+    io.emit('user connected', user);
+  });
+
+  console.log('user connected: ', socket.id);
+  socket.on('disconnect', (reason) => {
+    console.log('user disconnected: ', reason);
+  });
+
   socket.emit("open", {} );
 });
 
