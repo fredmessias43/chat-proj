@@ -1,7 +1,7 @@
 <template>
   <div class="users-wrapper">
-    <div v-for="u,i in users" class="user" :key="i" :title="u.username">
-      <img :src="'https://via.placeholder.com/100?text=' + u.username" :alt="u.username" />
+    <div v-for="user,i in users" class="user" :key="i" :title="user.username">
+      <img :src="'https://via.placeholder.com/100?text=' + user.username" :alt="user.username" />
       <div class="online"></div>
     </div>
   </div>
