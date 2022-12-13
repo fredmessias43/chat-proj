@@ -9,14 +9,11 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useWsStore } from '../stores/ws';
 
-const ws = useWsStore();
 const users = ref([]);
 
-ws.socket.on("user connected", (value) => {
-  users.value.push(value);
-});
+//   users.value.push(value);
+
 </script>
 
 <style lang="scss" scoped>
