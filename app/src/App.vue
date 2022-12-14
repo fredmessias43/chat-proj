@@ -12,9 +12,9 @@
           :message="m"
         />
       </div>
-
+ 
       <div class="message-input" >
-        <form @submit.prevent="sendMessage">
+        <form @submit.prevent="chat.sendMessage">
           <input v-model="chat.currentMessage.text" />
           <button type="submit">Send Message</button>
         </form>
@@ -35,14 +35,8 @@ import UsersConnectedList from './components/UsersConnectedList.vue';
 import LoginComponent from './components/Login.vue';
 
 const messageWrapper = ref(null);
-const dialog = ref(null);
 const chat = useChatStore();
 const auth = useAuthStore();
-
-function sendMessage() {
-  if ( !chat.currentMessage?.text ) return;
-  chat.currentMessage = chat.getEmptyMessage();
-}
 
 //chat.messageList.push(event);
 //messageWrapper.value.scrollTo(0, messageWrapper.value.scrollHeight );

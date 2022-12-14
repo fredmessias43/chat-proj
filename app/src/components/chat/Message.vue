@@ -5,17 +5,26 @@
       resolveMessageClass()
     ]"
   >
-    <span class="username">
-      {{ message.owner.username }}
-    </span>
-    <span class="text">
-      {{ message.text }}
-    </span>
+    <div class="header">
+      <span class="username">
+        {{ message.user_id }}
+      </span>
+    </div>
+    <div class="body">
+      <span class="text">
+        {{ message.text }}
+      </span>
+
+      <span class="date">
+        {{ lightFormat( new Date(message.created_at), 'HH:mm' ) }}
+      </span>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { useAuthStore } from '../../stores/auth';
+import { lightFormat } from "date-fns"
 
 const props = defineProps({
   message: Object
@@ -23,7 +32,7 @@ const props = defineProps({
 const auth = useAuthStore();
 
 function resolveMessageClass() {
-  if ( props.message.owner.username === auth.authUser.username ) {
+  if ( props.message.user_id === auth.authUser.id ) {
     return "own-message";
   }
   else {
@@ -75,10 +84,27 @@ function resolveMessageClass() {
 <style lang="scss" scoped>
 .message {
   .username {
-    margin-bottom: .5rem;
     font-weight: bold;
+    font-size: 0.9rem;
   }
+}
+</style>
+
+<style lang="scss" scoped>
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: .5rem;
+}
+.body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
 
+  .date {
+    font-size: 0.8rem;
+  }
 }
 </style>

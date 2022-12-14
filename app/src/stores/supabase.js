@@ -11,5 +11,9 @@ export const useSupabaseStore = defineStore('supabase', () => {
     createClient(supabaseUrl, supabaseAnonKey)
   );
 
-  return { supabase }
+  const channel = ref(
+    supabase.value.channel('chat-messages')
+  );
+
+  return { supabase, channel }
 })

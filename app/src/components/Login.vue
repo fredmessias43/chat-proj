@@ -47,7 +47,7 @@ async function getProfile(session) {
 
     let { data, error, status } = await supabase
       .from('profiles')
-      .select(`username, website, avatar_url`)
+      .select()
       .eq('id', user.id)
       .single()
 
@@ -55,7 +55,7 @@ async function getProfile(session) {
 
     if (data) 
     {
-      console.log(data)
+      auth.authUser = data;
     }
   }
   catch (error) 
