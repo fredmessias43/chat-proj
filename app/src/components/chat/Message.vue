@@ -32,7 +32,7 @@ const props = defineProps({
 const auth = useAuthStore();
 
 function resolveMessageClass() {
-  if ( props.message.user_id === auth.authUser.id ) {
+  if ( props.message.user_id === auth.user.id ) {
     return "own-message";
   }
   else {

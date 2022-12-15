@@ -2,20 +2,17 @@ import { defineStore } from 'pinia'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useAuthStore } from "./auth";
 import { useSupabaseStore } from "./supabase";
-import { useWsStore } from "./ws";
 
 export const useChatStore = defineStore('chat', () => {
   const auth = useAuthStore();
   const { supabase, channel } = useSupabaseStore();
 
-  const roomId = ref("room-id");
-  const messageList = ref([]);
+  const selectedRoomId = ref("room-id");
+  const rooms = ref([]);
+  const messages = ref([]);
   const currentMessage = ref({});
 
-  const owner = computed(() => auth.authUser.id/* ({
-    id: auth.authUser.id,
-    username: auth.authUser.username,
-  }) */);
+  const owner = computed(() => auth.user.id);
 
   function getEmptyMessage() {
     return {
@@ -29,25 +26,29 @@ export const useChatStore = defineStore('chat', () => {
     
     // send message to backend
     const res = await supabase.from('messages').insert({
-      room_id: roomId.value,
-      user_id: auth.authUser.id,
+      room_id: selectedRoomId.value,
+      user_id: auth.user.id,
       text: currentMessage.value.text,
     });
-    console.log(res)
     if ( res.error ) return;
 
     currentMessage.value = getEmptyMessage();
   }
 
-  async function getAllMessages()
+  async function getAllMessages(room_id)
   {
-    const { data, error } = await supabase.from("messages").select("*").eq("room_id", roomId.value);
-    console.log(data);
-    messageList.value = data;
+    const { data, error } = await supabase.from("messages").select("*").eq("room_id", room_id);
+    messages.value = data;
+  }
+
+  async function getAllRooms()
+  {
+    const { data, error } = await supabase.from("rooms").select("*")/* .eq("room_id", selectedRoomId.value) */;
+    rooms.value = data;
   }
 
   onMounted(async () => {
-    getAllMessages();
+    getAllMessages(selectedRoomId.value);
 
     channel.on(
       'postgres_changes',
@@ -55,11 +56,11 @@ export const useChatStore = defineStore('chat', () => {
         event: 'INSERT',
         schema: 'public',
         table: 'messages',
-        filter: `room_id=eq.${roomId.value}`,
+        filter: `room_id=eq.${selectedRoomId.value}`,
       },
       (payload) => {
         // console.log("payload from channel on", payload)
-        messageList.value.push(
+        messages.value.push(
           payload.new
         )
       }
@@ -80,9 +81,13 @@ export const useChatStore = defineStore('chat', () => {
   );
 
   return {
-    messageList, 
+    rooms,
+    messages,
+    selectedRoomId,
     currentMessage,
     getEmptyMessage,
-    sendMessage
+    sendMessage,
+    getAllMessages,
+    getAllRooms,
   }
 })

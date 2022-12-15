@@ -18,7 +18,6 @@ const dialog = ref(null);
 
 const { supabase } = useSupabaseStore();
 const auth = useAuthStore();
-const session = ref({});
 const user = ref({
   email: "fredmessias43@gmail.com"
 });
@@ -55,7 +54,7 @@ async function getProfile(session) {
 
     if (data) 
     {
-      auth.authUser = data;
+      auth.user = data;
     }
   }
   catch (error) 
@@ -70,19 +69,20 @@ async function getProfile(session) {
 
 onMounted(() => {
   supabase.auth.getSession().then(({ data }) => {
-    session.value = data.session;
-    if ( !session.value )
+    auth.session.value = data.session;
+    console.log(auth.session.value)
+    if ( !auth.session.value )
     {
       dialog.value.open();
     }
     else
     {
-      getProfile(session.value);
+      getProfile(auth.session.value);
     }
   })
 
   supabase.auth.onAuthStateChange((_, _session) => {
-    session.value = _session
+    auth.session.value = _session
   })
 });
 

@@ -1,14 +1,17 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export const useAuthStore = defineStore('auth', () => {
 
-  const authUser = ref({
+  const user = ref({
     id: "",
     username: "",
     accessToken: "",
     profilePhoto: {},
   });
+  const session = ref({});
+
+  const isAuthenticated = computed(() => Boolean(user.value.id) );
   
-  return { authUser }
+  return { user, session, isAuthenticated }
 })
