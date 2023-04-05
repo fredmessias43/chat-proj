@@ -9,7 +9,7 @@
       class=""
       v-if="auth.isAuthenticated"
     >
-      <Rooms />
+      <RoomsList />
   
       <Chat />
     </div>
@@ -21,7 +21,7 @@
 import { onMounted, ref } from 'vue';
 import Chat from './components/chat/Chat.vue';
 import Auth from './components/Auth.vue';
-import Rooms from './components/chat/Rooms.vue';
+import RoomsList from './components/chat/RoomsList.vue';
 import { useAuthStore } from './stores/auth';
 
 const auth = useAuthStore();

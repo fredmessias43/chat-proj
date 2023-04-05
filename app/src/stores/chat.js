@@ -43,7 +43,7 @@ export const useChatStore = defineStore('chat', () => {
 
   async function getAllRooms()
   {
-    const { data, error } = await supabase.from("rooms").select("*")/* .eq("room_id", selectedRoomId.value) */;
+    const { data, error } = await supabase.from("rooms").select("*");
     rooms.value = data;
   }
 

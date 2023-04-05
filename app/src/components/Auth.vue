@@ -1,8 +1,14 @@
 <template>
   <div>
-    <Dialog ref="dialog" id="userForm" :show-secondary-btn="false">
-      <form @submit.prevent="handleSubmit" id="userForm" style="display: flex;flex-direction: column;">
+    <Dialog ref="dialog" id="userForm" :show-secondary-btn="false" :show-primary-btn="false">
+      <form @submit.prevent="" id="userForm" style="display: flex;flex-direction: column;">
         <input v-model="user.email" placeholder="email" name="email" type="email">
+        <input v-model="user.password" placeholder="password" name="password" type="password">
+
+        <div class="actions">
+          <button type="button" @click="handleSignUp" > Cadastrar </button>
+          <button type="button" @click="handleLogin" > Entrar </button>
+        </div>
       </form>
     </Dialog>
   </div>
@@ -11,51 +17,47 @@
 <script setup>
 import { ref, watch, onMounted, computed } from "vue";
 import Dialog from './Dialog.vue';
-import { useSupabaseStore } from "../stores/supabase";
 import { useAuthStore } from "../stores/auth";
 
 const dialog = ref(null);
+const loading = ref(false);
 
-const { supabase } = useSupabaseStore();
 const auth = useAuthStore();
 const user = ref({
-  email: "fredmessias43@gmail.com"
+  email: "fred_messias2014@hotmail.com",
+  password: "password",
 });
 
-async function handleSubmit() {
+async function handleSignUp() {
   try {
-    // loading.value = true
-    const { error } = await supabase.auth.signInWithOtp({
-      email: user.value.email,
-    })
-    if (error) throw error
-    alert('Check your email for the login link!')
+    loading.value = true;
+    await auth.signUp();
   } catch (error) {
     if (error instanceof Error) {
       alert(error.message)
     }
   } finally {
-    // dialog.value.close();
-    // loading.value = false
+    loading.value = false;
   }
 }
 
-async function getProfile(session) {
+async function handleLogin() {
   try {
-    const { user } = session
-
-    let { data, error, status } = await supabase
-      .from('profiles')
-      .select()
-      .eq('id', user.id)
-      .single()
-
-    if (error && status !== 406) throw error
-
-    if (data) 
-    {
-      auth.user = data;
+    loading.value = true;
+    await auth.signIn();
+  } catch (error) {
+    if (error instanceof Error) {
+      alert(error.message)
     }
+  } finally {
+    loading.value = false;
+  }
+}
+
+async function getUser(session) {
+  loading.value = true;
+  try {
+    await auth.getUser(session);
   }
   catch (error) 
   {
@@ -63,27 +65,21 @@ async function getProfile(session) {
   }
   finally 
   {
-    // loading.value = false
+    loading.value = false;
   }
 }
 
-onMounted(() => {
-  supabase.auth.getSession().then(({ data }) => {
-    auth.session.value = data.session;
-    console.log(auth.session.value)
-    if ( !auth.session.value )
-    {
-      dialog.value.open();
-    }
-    else
-    {
-      getProfile(auth.session.value);
-    }
-  })
+onMounted(async () => {
+  const session = await auth.getSession();
+  if ( !session )
+  {
+    dialog.value.open();
+  }
+  else
+  {
+    getUser(session);
+  }
 
-  supabase.auth.onAuthStateChange((_, _session) => {
-    auth.session.value = _session
-  })
 });
 
 </script>

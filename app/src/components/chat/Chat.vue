@@ -26,11 +26,10 @@ const emit = defineEmits([]);
 const messageWrapperRef = ref(null);
 const chat = useChatStore();
 const { messages, currentMessage } = storeToRefs(chat);
- 
+
 watch(
   () => messages.value,
   async () => {
-    console.log('ativou')
     await nextTick();
     messageWrapperRef.value.scrollTo(0, messageWrapperRef.value.scrollHeight );
   },
