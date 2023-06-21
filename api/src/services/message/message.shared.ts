@@ -1,13 +1,13 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.shared.html
 import type { Params } from '@feathersjs/feathers'
 import type { ClientApplication } from '../../client'
-import type { Message, MessageData, MessagePatch, MessageQuery, MessageService } from './messages.class'
+import type { Message, MessageData, MessagePatch, MessageQuery, MessageService } from './message.class'
 
 export type { Message, MessageData, MessagePatch, MessageQuery }
 
 export type MessageClientService = Pick<MessageService<Params<MessageQuery>>, (typeof messageMethods)[number]>
 
-export const messagePath = 'messages'
+export const messagePath = 'message'
 
 export const messageMethods = ['find', 'get', 'create', 'patch', 'remove'] as const
 

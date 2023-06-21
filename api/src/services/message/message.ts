@@ -11,14 +11,14 @@ import {
   messageDataResolver,
   messagePatchResolver,
   messageQueryResolver
-} from './messages.schema'
+} from './message.schema'
 
 import type { Application } from '../../declarations'
-import { MessageService, getOptions } from './messages.class'
-import { messagePath, messageMethods } from './messages.shared'
+import { MessageService, getOptions } from './message.class'
+import { messagePath, messageMethods } from './message.shared'
 
-export * from './messages.class'
-export * from './messages.schema'
+export * from './message.class'
+export * from './message.schema'
 
 // A configure function that registers the service and its hooks via `app.configure`
 export const message = (app: Application) => {
