@@ -2,8 +2,8 @@
   <div>
     <Dialog ref="dialog" id="userForm" :show-secondary-btn="false" :show-primary-btn="false">
       <form @submit.prevent="" id="userForm" style="display: flex;flex-direction: column;">
-        <input v-model="user.email" placeholder="email" name="email" type="email">
-        <input v-model="user.password" placeholder="password" name="password" type="password">
+        <input v-model="unAuthUser.email" placeholder="email" name="email" type="email">
+        <input v-model="unAuthUser.password" placeholder="password" name="password" type="password">
 
         <div class="actions">
           <button type="button" @click="handleSignUp" > Cadastrar </button>
@@ -23,15 +23,15 @@ const dialog = ref(null);
 const loading = ref(false);
 
 const auth = useAuthStore();
-const user = ref({
-  email: "fred_messias2014@hotmail.com",
+const unAuthUser = ref({
+  email: "fredmessias43@gmail.com",
   password: "password",
 });
 
 async function handleSignUp() {
   try {
     loading.value = true;
-    await auth.signUp();
+    await auth.signUp(unAuthUser.value);
   } catch (error) {
     if (error instanceof Error) {
       alert(error.message)
@@ -44,7 +44,7 @@ async function handleSignUp() {
 async function handleLogin() {
   try {
     loading.value = true;
-    await auth.signIn();
+    await auth.signIn(unAuthUser.value);
   } catch (error) {
     if (error instanceof Error) {
       alert(error.message)
